@@ -45,21 +45,8 @@ trait CreateUpdateHelper
         }
     }
 
-    public function decrease_total_price_of_orders_that_have_this_product($product): void
-    {
-        $orders = Order::byProduct($product->id)->get();
-
-        if(count($orders))
-            foreach ($orders as $order) {
-                $order_item = OrderItem::byOrderAndProduct($order->id,$product->id)->first();
-                $order->total_price -= $product->is_offer ? $product->price - ($product->price * $product->offer) / 100 : $product->price * $order_item->quantity;
-                $order->save();
-            }
-    }
-
     public function create_order_item_and_reduce_every_product_by_order_quantity($products,$order)
     {
-        $total_price = 0;
         foreach ($products as $p) {
             OrderItem::create([
                 'product_id' => $p['id'],
@@ -71,21 +58,12 @@ trait CreateUpdateHelper
                 $pr->quantity -= $p['quantity'];
                 $pr->save();
             }
-
-            $total_price += (!$pr->is_offer ?
-                                $pr->price :
-                                $pr->price - ($pr->price * $pr->offer / 100)  ) * $p['quantity'];
         }
-        $order->total_price = $total_price;
-        $order->save();
     }
 
     public function decresue_total_price_before_delete_order_item($orderItem): void
     {
-        $order = Order::byOrderItemId($orderItem->id)->first();
         $product = $orderItem->product;
-        $order->total_price -= $orderItem->quantity * $product->price;
-        $order->save();
         $product->quantity += $orderItem->quantity;
         $product->save();
     }
@@ -110,11 +88,9 @@ trait CreateUpdateHelper
             if($product->is_quantity)
                $product->quantity += $orderItem->quantity;
 
-            $order->total_price -= $orderItem->quantity * $product->price;
             $orderItem->update([
                 'quantity' => $p['quantity']
             ]);
-            $order->total_price += $p['quantity'] * $product->price;
             $order->save();
 
             if($product->is_quantity){
@@ -309,8 +285,6 @@ trait CreateUpdateHelper
         $product = Product::find($product_id);
 
         if($product) {
-            self::decrease_total_price_of_orders_that_have_this_product($product);
-
             $users = User::byProductOrders($product)->get();
 
             foreach ($users as $user){

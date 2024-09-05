@@ -19,8 +19,8 @@ class PrescriptionController extends Controller
             self::ok(Prescription::where('user_id',$request->user()->id)->latest()->get());
         }else{
             self::ok([
-                'prescriptions' => Prescription::filter(request(['take','skip','search','sort','status']))->get(),
-                'count' => Prescription::filter(request(['search','status']))->count()
+                'prescriptions' => Prescription::filter(request(['take','skip','search','sort', 'user_id' ,'status']))->get(),
+                'count' => Prescription::filter(request(['search','status', 'user_id']))->count()
             ]);
         }
     }

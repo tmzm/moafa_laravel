@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RateController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AccessTokensOnly;
 use App\Http\Middleware\AdminMiddleware;
@@ -112,6 +113,9 @@ Route::group([
     Route::post('prescriptions',[PrescriptionController::class,'index']);
     Route::get('prescriptions/{prescription_id}',[PrescriptionController::class,'show']);
     Route::delete('prescriptions/{prescription_id}/delete',[PrescriptionController::class,'destroy']);
+
+    // Rates
+    Route::post('rates',[RateController::class,'index']);
 
     // Locations
     Route::post('locations/create',[LocationController::class,'create']);

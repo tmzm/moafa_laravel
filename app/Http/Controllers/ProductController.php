@@ -63,7 +63,7 @@ class ProductController extends Controller
      */
     public function show($slug)
     {
-        self::ok(Product::where('slug',$slug)->first());
+        self::ok(Product::where('slug',$slug)->withRate()->first());
     }
 
     public function show_by_id($product_id)
@@ -91,10 +91,10 @@ class ProductController extends Controller
         self::delete_product($request,$product_id);
     }
 
-    public function import(Request $request) 
-    {
-        Excel::import(new ProductsImport, $request->file('excel'));
+    // public function import(Request $request) 
+    // {
+    //     Excel::import(new ProductsImport, $request->file('excel'));
         
-        return self::ok();
-    }
+    //     return self::ok();
+    // }
 }

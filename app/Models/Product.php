@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @method static byOwnerAndProductId($product_id, $id)
@@ -98,6 +99,13 @@ class Product extends Model
 
     }
 
+    public function scopeWithRate($query)
+    {
+        $query->withCount(['rates as rate' => function($query) {
+            $query->select(DB::raw('avg(number)'));
+        }]);
+    }
+
     public function category_products()
     {
         return $this->hasMany(CategoryProduct::class);
@@ -111,6 +119,11 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function rates()
+    {
+        return $this->hasMany(Rate::class);
     }
 
 }

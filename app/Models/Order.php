@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 /**
  * @method static byOrderItemId($id)
  * @method static byProduct($id)
- * @method static byUser(Request $request)
  */
 class Order extends Model
 {
@@ -37,11 +36,11 @@ class Order extends Model
 
         }
 
-        if($filters['total_price'] ?? false){
+        // if($filters['total_price'] ?? false){
 
-            $query->whereBetween('amount',$filters['total_price']);
+        //     $query->whereBetween('amount',$filters['total_price']);
 
-        }
+        // }
 
         if($filters['status'] ?? false){
 
@@ -71,9 +70,35 @@ class Order extends Model
             
     }
 
-    public function scopeByUser($query,Request $request)
+    public function coupon()
     {
-        $query->where('user_id',$request->user()->id);
+        return $this->belongsTo(Coupon::class);
+    }
+    
+    public function scopeWithTotalPrice($query)
+    {
+        return $query->with(['orderItems.product', 'coupon'])->get()->map(function ($order) {
+            $totalPriceBeforeCoupon = $order->orderItems->sum(function ($orderItem) {
+                $product = $orderItem->product;
+                $price = $product->is_offer ? $product->price * ($product->offer / 100) : $product->price;
+                return $orderItem->quantity * $price;
+            });
+
+            if ($order->coupon) {
+                if ($order->coupon->discount_type == 'percentage') {
+                    $totalPrice = $totalPriceBeforeCoupon * (1 - ($order->coupon->discount / 100));
+                } elseif ($order->coupon->discount_type == 'fixed') {
+                    $totalPrice = $totalPriceBeforeCoupon - $order->coupon->discount;
+                } else {
+                    $totalPrice = $totalPriceBeforeCoupon;
+                }
+            } else {
+                $totalPrice = $totalPriceBeforeCoupon;
+            }
+
+            $order->total_price = $totalPrice;
+            return $order;
+        });
     }
 
     public function scopeByOrderItemId($query,$order_item_id)

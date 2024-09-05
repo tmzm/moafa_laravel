@@ -5,21 +5,40 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Prescription extends Model
+class Rate extends Model
 {
     use HasFactory;
 
-    protected $with = ['user', 'order'];
-
     protected $guarded = [];
+
+    protected $with = ['product','user'];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function scopeFilter($query, array $filters){
 
         if($filters['search'] ?? false){
 
-            $query->whereHas('user', fn ($query)
-
-            => $query->where('name','like' , '%' . $filters['search'] . '%'))->orWhere('description','like' , '%' . $filters['search'] . '%');
+            $query->where(
+                fn($query)=>
+                $query
+                    ->where('comment', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere(
+                        fn($query)=>
+                        $query
+                            ->whereHas('product',
+                                fn($query)=>$query->where('name', 'like', '%' . $filters['search'] . '%')
+                            )
+                    )
+            );
 
         }
 
@@ -41,12 +60,6 @@ class Prescription extends Model
 
         }
 
-        if($filters['status'] ?? false){
-
-            $query->where('status',$filters['status']);
-
-        }
-            
         if($filters['sort'] ?? false){
 
             if($filters['sort'] == 'oldest'){
@@ -60,13 +73,6 @@ class Prescription extends Model
             $query->latest();
             
         }
-    }
 
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
-
-    public function order() {
-        return $this->belongsTo(Order::class);
     }
 }

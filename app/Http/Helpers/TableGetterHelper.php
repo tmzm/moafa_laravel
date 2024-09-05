@@ -9,12 +9,13 @@ use App\Models\Product;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 trait TableGetterHelper
 {
     public function filter_products($filters): void
     {
-        $products = Product::filter($filters)->get();
+        $products = Product::filter($filters)->withRate()->get();
 
         self::ok(['products' => $products,'count' => Product::filter(Arr::except($filters,['take','skip']))->count()]);
     }
@@ -39,7 +40,7 @@ trait TableGetterHelper
             $orders = Order::filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status']))->withCount('order_items')->get();
             self::ok(['orders' => $orders,'count' => Order::filter(request(['search', 'total_price','status','payment_status']))->count()]);
         }else{
-            $orders = Order::byUser($request)->filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status']))->withCount('order_items')->get();
+            $orders = Order::where('user_id',$request->user()->id)->filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status']))->withCount('order_items')->get();
             self::ok(['orders' => $orders]);
         }
 
