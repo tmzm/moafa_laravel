@@ -39,11 +39,36 @@ class Order extends Model
 
         if($filters['total_price'] ?? false){
 
-            $query->whereBetween('amount',$filters['amount']);
+            $query->whereBetween('amount',$filters['total_price']);
 
         }
+
+        if($filters['status'] ?? false){
+
+            $query->where('status',$filters['status']);
+
+        }
+
+        if($filters['payment_status'] ?? false){
+
+            $query->where('status',$filters['payment_status']);
+
+        }
+
+        if($filters['sort'] ?? false){
+
+            if($filters['sort'] == 'oldest'){
+                
+                $query->oldest();
+    
+            }
+
+        }else{
             
-        $query->latest();
+            $query->latest();
+            
+        }
+            
     }
 
     public function scopeByUser($query,Request $request)

@@ -60,6 +60,16 @@ class UserController extends Controller
         self::show_user_details($request);
     }
 
+    public function show_by_id($user_id)
+    {
+        $user = User::find($user_id);
+
+        if($user)
+            self::ok($user);
+
+        self::notFound();
+    }
+
     /**
      * @param Request $request
      */
@@ -90,5 +100,25 @@ class UserController extends Controller
         }
 
         self::unAuth();
+    }
+
+    public function delete(Request $request)
+    {
+        if($request->user()->delete())
+            self::ok();
+
+        self::unAuth();
+    }
+
+    public function delete_user($user_id)
+    {
+        $user = User::find($user_id);
+
+        if($user){
+            $user->delete();
+            self::ok();
+        }
+
+        self::notFound();
     }
 }

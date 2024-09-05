@@ -16,6 +16,11 @@ class OrderController extends Controller
         self::get_user_orders($request);
     }
 
+    public function index_by_user($user_id)
+    {
+        self::ok(Order::where('user_id',$user_id)->latest()->get());
+    }
+
     /**
      * Show the form for creating a new resource.
      * @param Request $request

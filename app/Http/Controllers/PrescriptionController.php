@@ -18,7 +18,10 @@ class PrescriptionController extends Controller
         if($request->user()->role == 'user'){
             self::ok(Prescription::where('user_id',$request->user()->id)->latest()->get());
         }else{
-            self::ok(Prescription::latest()->get());
+            self::ok([
+                'prescriptions' => Prescription::filter(request(['take','skip','search','sort','status']))->get(),
+                'count' => Prescription::filter(request(['search','status']))->count()
+            ]);
         }
     }
 
@@ -44,15 +47,20 @@ class PrescriptionController extends Controller
         );
     }
 
-    // /**
-    //  * Display the specified resource.
-    //  * @param Request $request
-    //  * @param $order_id
-    //  */
-    // public function show(Request $request,$order_id): void
-    // {
-    //     self::get_user_order_by_id($order_id,$request->user()->id);
-    // }
+    /**
+     * Display the specified resource.
+     * @param Request $request
+     * @param $order_id
+     */
+    public function show($prescription_id): void
+    {
+        $prescription = Prescription::find($prescription_id);
+
+        if($prescription)
+            self::ok();
+
+        self::notFound();
+    }
 
     /**
      * Update the specified resource in storage.

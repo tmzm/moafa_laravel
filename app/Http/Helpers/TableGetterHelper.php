@@ -36,10 +36,10 @@ trait TableGetterHelper
     public function get_user_orders(Request $request): void
     {
         if($request->user()->role == 'admin'){
-            $orders = Order::filter(request(['search', 'amount', 'take', 'skip']))->withCount('order_items')->get();
-            self::ok(['orders' => $orders,'count' => Order::filter(request(['search', 'amount']))->count()]);
+            $orders = Order::filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status']))->withCount('order_items')->get();
+            self::ok(['orders' => $orders,'count' => Order::filter(request(['search', 'total_price','status','payment_status']))->count()]);
         }else{
-            $orders = Order::byUser($request)->filter(request(['search', 'amount', 'take', 'skip']))->withCount('order_items')->get();
+            $orders = Order::byUser($request)->filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status']))->withCount('order_items')->get();
             self::ok(['orders' => $orders]);
         }
 
@@ -68,7 +68,7 @@ trait TableGetterHelper
 
     public function get_all_categories(): void
     {
-        $categories = Category::withCount('category_products')->get();
+        $categories = Category::withCount('category_products')->latest()->get();
 
         self::ok($categories);
     }

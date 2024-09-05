@@ -12,6 +12,7 @@ use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AccessTokensOnly;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +30,40 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:api']] ,function(){
     Route::get('/users/refresh-token', [UserController::class, 'refresh_token']);
+});
+
+Route::group([
+    'middleware' =>
+    [
+        'auth:api',
+        AccessTokensOnly::class,
+        AdminMiddleware::class
+    ]
+],function(){
+    Route::delete('users/{user_id}/delete',[UserController::class,'delete_user']);
+
+    // Categories
+    Route::post('categories/{category_id}/update',[CategoryController::class,'edit']);
+    Route::post('categories/create',[CategoryController::class,'create']);
+    Route::delete('categories/{category_id}/delete',[CategoryController::class,'destroy']);
+
+    // Brands
+    Route::post('brands/{brand_id}/update',[BrandController::class,'edit']);
+    Route::post('brands/create',[BrandController::class,'create']);
+    Route::delete('brands/{brand_id}/delete',[BrandController::class,'destroy']);
+
+    // Favorite
+    Route::post('favorites/product/{product_id}/create',[FavoriteController::class,'create']);
+    Route::delete('favorites/{favorites_id}/delete',[FavoriteController::class,'destroy']);
+
+    // Prescription
+    Route::get('prescriptions/{prescription_id}/orders/{order_id}',[PrescriptionController::class,'update']);
+
+    // Products
+    Route::post('products/create',[ProductController::class,'create']);
+    Route::post('products/import',[ProductController::class,'import']);
+    Route::post('products/{product_id}/update',[ProductController::class,'update']);
+    Route::delete('products/{product_id}/delete',[ProductController::class,'destroy']);  
 });
 
 Route::group([
@@ -55,42 +90,27 @@ Route::group([
     Route::get('users',[UserController::class,'index']);
     Route::post('users/update',[UserController::class,'update']);
     Route::get('users/show',[UserController::class,'show']);
+    Route::get('users/{user_id}/show',[UserController::class,'show_by_id']);
     Route::post('users/fcm_token_edit',[UserController::class,'edit']);
-
-    // Products
-    Route::post('products/create',[ProductController::class,'create']);
-    Route::post('products/import',[ProductController::class,'import']);
-    Route::post('products/{product_id}/update',[ProductController::class,'update']);
-    Route::delete('products/{product_id}/delete',[ProductController::class,'destroy']);    
+    Route::delete('users/delete',[UserController::class,'delete']);  
 
     // Orders
     Route::post('orders',[OrderController::class,'index']);
+    Route::get('orders/user/{user_id}',[OrderController::class,'index_by_user']);
     Route::post('orders/create',[OrderController::class,'create']);
     Route::get('orders/{order_id}/show',[OrderController::class,'show']);
     Route::post('orders/{order_id}/update',[OrderController::class,'update']);
     Route::delete('orders/{order_id}/delete',[OrderController::class,'destroy']);
     Route::delete('orderItems/{orderItem_id}/delete',[OrderItemController::class,'destroy']);
 
-    // Categories
-    Route::post('categories/{category_id}/update',[CategoryController::class,'edit']);
-    Route::post('categories/create',[CategoryController::class,'create']);
-    Route::delete('categories/{category_id}/delete',[CategoryController::class,'destroy']);
-
-    // Brands
-    Route::post('brands/{brand_id}/update',[BrandController::class,'edit']);
-    Route::post('brands/create',[BrandController::class,'create']);
-    Route::delete('brands/{brand_id}/delete',[BrandController::class,'destroy']);
-
     // Favorites
     Route::get('favorites',[FavoriteController::class,'index']);
     Route::get('favorites/{product_id}',[FavoriteController::class,'show']);
-    Route::post('favorites/product/{product_id}/create',[FavoriteController::class,'create']);
-    Route::delete('favorites/{favorites_id}/delete',[FavoriteController::class,'destroy']);
     
     // Prescriptions
     Route::post('prescriptions/create',[PrescriptionController::class,'create']);
-    Route::get('prescriptions',[PrescriptionController::class,'index']);
-    Route::get('prescriptions/{prescription_id}/orders/{order_id}',[PrescriptionController::class,'update']);
+    Route::post('prescriptions',[PrescriptionController::class,'index']);
+    Route::get('prescriptions/{prescription_id}',[PrescriptionController::class,'show']);
     Route::delete('prescriptions/{prescription_id}/delete',[PrescriptionController::class,'destroy']);
 
     // Locations
