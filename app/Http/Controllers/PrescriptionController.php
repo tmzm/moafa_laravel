@@ -9,10 +9,6 @@ use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller
 {
-        /**
-     * Display a listing of the resource.
-     * @param Request $request
-     */
     public function index(Request $request)
     {
         if($request->user()->role == 'user'){
@@ -25,10 +21,6 @@ class PrescriptionController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @param Request $request
-     */
     public function create(CreatePrescriptionRequest $request)
     {
         $data = $request->validated();
@@ -47,36 +39,21 @@ class PrescriptionController extends Controller
         );
     }
 
-    /**
-     * Display the specified resource.
-     * @param Request $request
-     * @param $order_id
-     */
     public function show($prescription_id): void
     {
         $prescription = Prescription::find($prescription_id);
 
         if($prescription)
-            self::ok();
+            self::ok($prescription);
 
         self::notFound();
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param $order_id
-     */
     public function update($prescription_id, $order_id): void
     {
         Prescription::find($prescription_id)->update(['order_id' => $order_id]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param Request $request
-     * @param $order_id
-     */
     public function destroy($prescription_id): void
     {
         $prescription = Prescription::find($prescription_id);

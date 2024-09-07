@@ -82,9 +82,6 @@ class UserController extends Controller
     }
 
     public function refresh_token(Request $request) {
-        if(!$request->user()->id)
-            self::unAuth();
-
         if($request->user()->tokenCan('user-refresh-token')){
             $tokens = Token::where('user_id', $request->user()->id)->get();
 

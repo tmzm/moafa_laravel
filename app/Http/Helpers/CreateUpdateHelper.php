@@ -119,6 +119,7 @@ trait CreateUpdateHelper
         self::check_products_quantity($products);
 
         $order = Order::create([
+            'coupon_id' => $request['coupon_id'] ?? false,
             'is_prescription' => $request['is_prescription'] ?? false,
             'accepted_by_user' => $request['accepted_by_user'] ?? true,
             'time' => $request['time'] ?? null,

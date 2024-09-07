@@ -24,6 +24,18 @@ class Order extends Model
 
         }
 
+        if($filters['user_id'] ?? false){
+
+            $query->where('user_id', $filters['user_id']);
+
+        }
+
+        if($filters['coupon_id'] ?? false){
+
+            $query->where('coupon_id', $filters['coupon_id']);
+
+        }
+
         if($filters['take'] ?? false){
 
             $query->take($filters['take']);
@@ -119,7 +131,7 @@ class Order extends Model
 
     protected $guarded = [];
 
-    protected $with = ['user','order_items','location'];
+    protected $with = ['user','order_items','location', 'coupon'];
 
     public function user()
     {

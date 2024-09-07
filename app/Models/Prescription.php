@@ -9,7 +9,7 @@ class Prescription extends Model
 {
     use HasFactory;
 
-    protected $with = ['user', 'order'];
+    protected $with = ['user'];
 
     protected $guarded = [];
 

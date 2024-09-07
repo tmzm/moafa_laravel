@@ -16,11 +16,6 @@ class OrderController extends Controller
         self::get_user_orders($request);
     }
 
-    public function index_by_user($user_id)
-    {
-        self::ok(Order::where('user_id',$user_id)->latest()->get());
-    }
-
     /**
      * Show the form for creating a new resource.
      * @param Request $request
@@ -37,16 +32,12 @@ class OrderController extends Controller
      */
     public function show(Request $request,$order_id): void
     {
-        if($request->user()->role == 'user'){
-            self::get_user_order_by_id($order_id,$request->user()->id);
-        }else{
-            $order = Order::find($order_id);
+        $order = Order::withTotalPrice()->find($order_id);
 
-            if($order)
-                self::ok($order);
+        if($order)
+            self::ok($order);
 
-            self::notFound();
-        }
+        self::notFound();
     }
 
     /**

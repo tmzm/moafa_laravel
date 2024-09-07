@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\NotificationController;
@@ -64,7 +65,12 @@ Route::group([
     Route::post('products/create',[ProductController::class,'create']);
     Route::post('products/import',[ProductController::class,'import']);
     Route::post('products/{product_id}/update',[ProductController::class,'update']);
-    Route::delete('products/{product_id}/delete',[ProductController::class,'destroy']);  
+    Route::delete('products/{product_id}/delete',[ProductController::class,'destroy']);
+
+    // Coupons
+    Route::post('coupons/create',[CouponController::class,'create']);
+    Route::post('coupons/{coupon_id}/update',[CouponController::class,'update']);
+    Route::delete('coupons/{coupon_id}/delete',[CouponController::class,'destroy']);  
 });
 
 Route::group([
@@ -124,6 +130,10 @@ Route::group([
     // Notification
     Route::get('notifications',[NotificationController::class,'index']);
     Route::get('notifications/read',[NotificationController::class,'read_notify']);
+
+    // Coupons
+    Route::post('coupons',[CouponController::class,'index']);
+    Route::get('coupons/{coupon_id}',[CouponController::class,'show']);
 });
 
 Route::post('users/create',[UserController::class,'create']);
