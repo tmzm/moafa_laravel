@@ -7,6 +7,7 @@ use App\Enums\ReturnMessages;
 use App\Http\Controllers\NotificationController;
 use App\Models\Category;
 use App\Models\CategoryProduct;
+use App\Models\Coupon;
 use App\Models\Favorite;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -118,8 +119,16 @@ trait CreateUpdateHelper
 
         self::check_products_quantity($products);
 
+        $coupon = null;
+
+        if(isset($request['coupon_id'])){
+            $coupon = Coupon::find($request['coupon_id']);
+        }else if(isset($request['coupon_code'])){
+            $coupon = Coupon::firstWhere('code',$request['coupon_code']);
+        }
+
         $order = Order::create([
-            'coupon_id' => $request['coupon_id'] ?? false,
+            'coupon_id' => $coupon?->id ?? false,
             'is_prescription' => $request['is_prescription'] ?? false,
             'accepted_by_user' => $request['accepted_by_user'] ?? true,
             'time' => $request['time'] ?? null,

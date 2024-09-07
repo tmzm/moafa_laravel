@@ -89,10 +89,10 @@ class Order extends Model
     
     public function scopeWithTotalPrice($query)
     {
-        return $query->with(['orderItems.product', 'coupon'])->get()->map(function ($order) {
-            $totalPriceBeforeCoupon = $order->orderItems->sum(function ($orderItem) {
+        return $query->with(['order_items.product', 'coupon'])->get()->map(function ($order) {
+                $totalPriceBeforeCoupon = $order->order_items->sum(function ($orderItem) {
                 $product = $orderItem->product;
-                $price = $product->is_offer ? $product->price * ($product->offer / 100) : $product->price;
+                $price = $product->is_offer ? $product->price * (1 - ($product->offer / 100)) : $product->price;
                 return $orderItem->quantity * $price;
             });
 
@@ -131,7 +131,7 @@ class Order extends Model
 
     protected $guarded = [];
 
-    protected $with = ['user','order_items','location', 'coupon'];
+    protected $with = ['user','order_items','location', 'coupon', 'prescription'];
 
     public function user()
     {
@@ -146,5 +146,10 @@ class Order extends Model
     public function order_items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
@@ -71,6 +72,9 @@ Route::group([
     Route::post('coupons/create',[CouponController::class,'create']);
     Route::post('coupons/{coupon_id}/update',[CouponController::class,'update']);
     Route::delete('coupons/{coupon_id}/delete',[CouponController::class,'destroy']);  
+
+    Route::get('analytics',[AnalyticsController::class,'index']);
+    Route::get('analytics/categories_sales',[AnalyticsController::class,'sales_categories']);
 });
 
 Route::group([
@@ -134,6 +138,7 @@ Route::group([
     // Coupons
     Route::post('coupons',[CouponController::class,'index']);
     Route::get('coupons/{coupon_id}',[CouponController::class,'show']);
+    Route::get('coupons/{code}/unique',[CouponController::class,'unique']);
 });
 
 Route::post('users/create',[UserController::class,'create']);

@@ -69,4 +69,13 @@ class CouponController extends Controller
 
         self::notFound();
     }
+
+    public function unique($code)
+    {
+        if(Coupon::firstWhere('code',$code)){
+            self::ok();
+        }
+
+        self::notFound();
+    }
 }
