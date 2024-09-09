@@ -23,9 +23,9 @@ return new class extends Migration
             $table->boolean('is_quantity')->default(false);
             $table->date('expiration');
             $table->string('image')->nullable();
-            $table->string('meta_subtitle');
-            $table->string('meta_title');
-            $table->text('meta_description');
+            $table->string('meta_subtitle')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
             $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
