@@ -49,7 +49,12 @@ class CouponController extends Controller
         $coupon = Coupon::find($coupon_id);
 
         if($coupon){
-            $coupon->update($request->all());
+            $coupon->update([
+                'user_id' => $request->user_id ?? null,
+                'code' => $request->code ?? null,
+                'discount' => $request->discount ?? null,
+                'discount_type' => $request->discount_type ?? null
+            ]);
 
             self::ok($coupon);
         }
