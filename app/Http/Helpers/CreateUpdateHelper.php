@@ -363,8 +363,8 @@ trait CreateUpdateHelper
         $category = Category::find($category_id);
 
         $validator = validator($request->all(),[
-            'name' => 'unique:categories,name',
-            'image' => 'image|mimes:jpg,jpeg,png'
+            'name' => '',
+            'image' => 'image|mimes:jpg,jpeg,png,webp'
         ]);
 
         $data = $validator->validated();

@@ -41,7 +41,7 @@ class UpdateProductRequest extends FormRequest
             'meta_title' => '',
             'price' => '',
             'expiration' => 'date',
-            'image' => ['image','mimes:jpg,jpeg,png,svg'],
+            'image' => ['image','mimes:jpg,jpeg,png,svg,webp'],
             'categories' => 'array'
         ];
     }
