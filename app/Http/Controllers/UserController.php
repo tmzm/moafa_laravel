@@ -118,4 +118,15 @@ class UserController extends Controller
 
         self::notFound();
     }
+
+    public function unique($phone_number)
+    {
+        $user = User::firstWhere('phone_number',$phone_number);
+
+        if($user){
+            self::ok($user);
+        }
+
+        self::notFound();
+    }
 }

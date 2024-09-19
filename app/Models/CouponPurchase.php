@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Coupon extends Model
+class CouponPurchase extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    protected $with = ['user'];
+    protected $with = ['coupon','user'];
 
     public function scopeFilter($query, array $filters){
 
@@ -19,7 +19,11 @@ class Coupon extends Model
 
             $query->whereHas('user', fn ($query)
 
-            => $query->where('name','like' , '%' . $filters['search'] . '%'))->orWhere('code','like' , '%' . $filters['search'] . '%');
+            => $query->where('name','like' , '%' . $filters['search'] . '%'))
+            
+            ->OrWhereHas('coupon', fn ($query)
+
+            => $query->where('code','like' , '%' . $filters['search'] . '%'));
 
         }
 
@@ -57,18 +61,13 @@ class Coupon extends Model
             
     }
 
-    public function orders()
+    public function coupon()
     {
-        return $this->hasMany(Order::class);
+        return $this->belongsTo(Coupon::class);
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function coupon_purchases()
-    {
-        return $this->hasMany(CouponPurchase::class);
     }
 }

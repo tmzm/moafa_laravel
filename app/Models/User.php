@@ -83,4 +83,30 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function points_transfers()
+    {
+        return $this->hasMany(PointsTransfer::class);
+    }
+
+    public function sended_messages()
+    {
+        return $this->hasMany(Message::class,'sender_id');
+    }
+
+    public function received_messages()
+    {
+        return $this->hasMany(Message::class,'receiver_id');
+    }
+
+    public function points()
+    {
+        $deposits = $this->points_transfers()->where('type', 'deposit')
+            ->sum('amount');
+            
+        $withdrawals = $this->points_transfers()->where('type', 'withdrawal')
+            ->sum('amount');
+
+        return $deposits - $withdrawals;
+    }
 }

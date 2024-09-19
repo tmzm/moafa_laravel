@@ -4,12 +4,15 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CouponPurchaseController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\OtpController;
+use App\Http\Controllers\PointsTransferController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RateController;
@@ -75,6 +78,16 @@ Route::group([
 
     Route::get('analytics',[AnalyticsController::class,'index']);
     Route::get('analytics/categories_sales',[AnalyticsController::class,'sales_categories']);
+
+    // Messages
+    Route::post('messages/{message_id}/update',[MessageController::class,'update']);
+    Route::post('messages/create',[MessageController::class,'create']);
+    Route::delete('messages/{message_id}/delete',[MessageController::class,'destroy']);
+    Route::post('messages/users/{user_id}',[MessageController::class,'index_by_user']);
+    Route::get('messages/users',[MessageController::class,'index_users']);
+
+    // Phone unique
+    Route::get('users/{phone_number}/unique',[UserController::class,'unique']);
 });
 
 Route::group([
@@ -139,6 +152,14 @@ Route::group([
     Route::post('coupons',[CouponController::class,'index']);
     Route::get('coupons/{coupon_id}',[CouponController::class,'show']);
     Route::get('coupons/{code}/unique',[CouponController::class,'unique']);
+
+    // Coupon purchases
+    Route::post('coupon-purchases',[CouponPurchaseController::class,'index']);
+
+    // Points transfers
+    Route::post('points-transfers',[PointsTransferController::class,'index']);
+    Route::post('points-transfers/create',[PointsTransferController::class,'create']);
+
 });
 
 Route::post('users/create',[UserController::class,'create']);
