@@ -28,6 +28,7 @@ class CouponController extends Controller
             Coupon::create([
                 'user_id' => $request->user_id ?? null,
                 'code' =>  $request->code,
+                'price' =>  $request->price,
                 'discount' => $request->discount,
                 'discount_type' => $request->discount_type ?? 'percentage'
             ])
@@ -52,6 +53,7 @@ class CouponController extends Controller
             $coupon->update([
                 'user_id' => $request->user_id ?? null,
                 'code' => $request->code ?? null,
+                'price' =>  $request->price ?? null,
                 'discount' => $request->discount ?? null,
                 'discount_type' => $request->discount_type ?? null
             ]);

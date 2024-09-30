@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Coupon extends Model
+class PointsTransfer extends Model
 {
     use HasFactory;
 
@@ -19,7 +19,7 @@ class Coupon extends Model
 
             $query->whereHas('user', fn ($query)
 
-            => $query->where('name','like' , '%' . $filters['search'] . '%'))->orWhere('code','like' , '%' . $filters['search'] . '%');
+            => $query->where('name','like' , '%' . $filters['search'] . '%'));
 
         }
 
@@ -57,18 +57,8 @@ class Coupon extends Model
             
     }
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function coupon_purchases()
-    {
-        return $this->hasMany(CouponPurchase::class);
     }
 }
