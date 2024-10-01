@@ -128,7 +128,7 @@ trait CreateUpdateHelper
         }
 
         $order = Order::create([
-            'coupon_id' => $coupon?->id ?? false,
+            'coupon_id' => $coupon?->id ?? null,
             'is_prescription' => $request['is_prescription'] ?? false,
             'accepted_by_user' => $request['accepted_by_user'] ?? true,
             'time' => $request['time'] ?? null,

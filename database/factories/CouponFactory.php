@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class UserFactory extends Factory
+class CouponFactory extends Factory
 {
     /**
      * The current password being used by the factory.
@@ -24,11 +24,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'phone_number' => fake()->unique()->phoneNumber(),
-            'verified' => 1,
-            'password' => static::$password ??= Hash::make('password'),
-            'role' => 'user',
+            'user_id' =>fake()->boolean ? fake()->numberBetween(1,30) : null,  // Assuming a relation to a User model
+            'code' => strtoupper(fake()->bothify('???-####')),  // Example code format
+            'discount' => fake()->numberBetween(1, 50),  // Random discount between 1 and 50
+            'discount_type' => fake()->randomElement(['percentage', 'fixed']),
         ];
     }
 

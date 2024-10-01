@@ -69,13 +69,13 @@ class MessageController extends Controller
     public function index_users()
     {
         $sentUsers = User::where('role','!=','admin')
-            ?->whereHas('sended_messages', fn($query) => $query->count() > 0)
+            ?->whereHas('sended_messages')
             ?->with(['sended_messages' => fn($query) =>
                 $query->latest()->first()
             ])->get();
 
         $receivedUsers = User::where('role','!=','admin')
-            ?->whereHas('received_messages', fn($query) => $query->count() > 0)
+            ?->whereHas('received_messages')
             ?->with(['received_messages' => fn($query) =>
                 $query->latest()->first()
             ])->get();
@@ -95,6 +95,6 @@ class MessageController extends Controller
             return $user;
         });
 
-        self::ok();
+        self::ok($users);
     }
 }

@@ -37,8 +37,8 @@ trait TableGetterHelper
     public function get_user_orders(Request $request): void
     {
         if($request->user()->role == 'admin'){
-            $orders = Order::filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status','user_id']))->withCount('order_items')->withTotalPrice();
-            self::ok(['orders' => $orders,'count' => Order::filter(request(['search', 'total_price','status','payment_status']))->count()]);
+            $orders = Order::filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status','user_id','coupon_id']))->withCount('order_items')->withTotalPrice();
+            self::ok(['orders' => $orders,'count' => Order::filter(request(['search', 'total_price','status','payment_status','user_id','coupon_id']))->count()]);
         }else{
             $orders = Order::where('user_id',$request->user()->id)->filter(request(['search', 'total_price', 'take', 'skip','sort','status','payment_status']))->withCount('order_items')->withTotalPrice();
             self::ok(['orders' => $orders]);

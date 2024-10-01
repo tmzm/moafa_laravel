@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Location;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -9,7 +11,7 @@ use Illuminate\Support\Str;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class UserFactory extends Factory
+class OrderFactory extends Factory
 {
     /**
      * The current password being used by the factory.
@@ -23,12 +25,20 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $isTime = fake()->boolean;
+        $user = User::find(rand(1,30));
+
         return [
-            'name' => fake()->name(),
-            'phone_number' => fake()->unique()->phoneNumber(),
-            'verified' => 1,
-            'password' => static::$password ??= Hash::make('password'),
-            'role' => 'user',
+            'user_id' => $user->id,  // Assuming a relation to a User model
+            'coupon_id' => fake()->numberBetween(1,15),  // Assuming a relation to a Coupon model
+            'status' => fake()->randomElement(['preparing', 'shipping', 'delivered']),
+            'payment_status' => fake()->boolean,
+            'time' => $isTime ? fake()->dateTime : null,
+            'is_time' => $isTime,
+            'note' => fake()->optional()->paragraph,
+            'location_id' => Location::where('user_id',$user->id)->first() ?? null,
+            'accepted_by_user' => 1,
+            'is_prescription' => 0,
         ];
     }
 

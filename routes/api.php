@@ -111,7 +111,7 @@ Route::group([
     Route::post('users/update',[UserController::class,'update']);
 
     // Users
-    Route::get('users',[UserController::class,'index']);
+    Route::post('users',[UserController::class,'index']);
     Route::post('users/update',[UserController::class,'update']);
     Route::get('users/show',[UserController::class,'show']);
     Route::get('users/{user_id}/show',[UserController::class,'show_by_id']);
