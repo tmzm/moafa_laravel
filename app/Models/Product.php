@@ -69,7 +69,7 @@ class Product extends Model
 
             if($filters['sort'] == 'a-z'){
 
-                $query->orderBy('scientific_name', 'asc');
+                $query->orderBy('name', 'asc');
     
             }
             
