@@ -27,7 +27,7 @@ class PointsTransferFactory extends Factory
             'reason' => fake()->sentence,
             'user_id' => rand(1,30),  // Assuming a relation to a User model
             'amount' => fake()->numberBetween(100, 500),  // Random amount between 10 and 500
-            'type' => 'deposit',
+            'type' => 'DEPOSIT',
         ];
     }
 

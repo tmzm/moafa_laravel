@@ -20,7 +20,9 @@ class Order extends Model
 
             $query->whereHas('user', fn ($query)
 
-            => $query->where('name','like' , '%' . $filters['search'] . '%'));
+            => $query->where('first_name','like' , '%' . $filters['search'] . '%')
+
+            ->orWhere('last_name','like' , '%' . $filters['search'] . '%'));
 
         }
 
@@ -97,9 +99,9 @@ class Order extends Model
             });
 
             if ($order->coupon) {
-                if ($order->coupon->discount_type == 'percentage') {
+                if ($order->coupon->discount_type == 'PERCENTAGE') {
                     $totalPrice = $totalPriceBeforeCoupon * (1 - ($order->coupon->discount / 100));
-                } elseif ($order->coupon->discount_type == 'fixed') {
+                } elseif ($order->coupon->discount_type == 'FIXED') {
                     $totalPrice = $totalPriceBeforeCoupon - $order->coupon->discount;
                 } else {
                     $totalPrice = $totalPriceBeforeCoupon;

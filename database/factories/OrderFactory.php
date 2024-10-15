@@ -31,7 +31,7 @@ class OrderFactory extends Factory
         return [
             'user_id' => $user->id,  // Assuming a relation to a User model
             'coupon_id' => fake()->numberBetween(1,15),  // Assuming a relation to a Coupon model
-            'status' => fake()->randomElement(['preparing', 'shipping', 'delivered']),
+            'status' => fake()->randomElement(['PREPARING', 'SHIPPING', 'DELIVERED']),
             'payment_status' => fake()->boolean,
             'time' => $isTime ? fake()->dateTime : null,
             'is_time' => $isTime,

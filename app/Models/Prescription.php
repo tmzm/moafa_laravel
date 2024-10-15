@@ -19,7 +19,11 @@ class Prescription extends Model
 
             $query->whereHas('user', fn ($query)
 
-            => $query->where('name','like' , '%' . $filters['search'] . '%'))->orWhere('description','like' , '%' . $filters['search'] . '%');
+            => $query->where('first_name','like' , '%' . $filters['search'] . '%')
+
+            ->orWhere('last_name','like' , '%' . $filters['search'] . '%'))
+            
+            ->orWhere('description','like' , '%' . $filters['search'] . '%');
 
         }
 

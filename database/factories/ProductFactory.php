@@ -30,9 +30,9 @@ class ProductFactory extends Factory
             'name' => fake()->word,
             'slug' => fake()->slug,
             'is_offer' => $isOffer,
-            'offer' => $isOffer ? fake()->optional()->randomFloat(2, 5, 100) : null,
+            'offer' => $isOffer ? fake()->optional()->numberBetween(5, 99) : null,
             'description' => fake()->paragraph,
-            'price' => fake()->randomFloat(2, 10000, 100000),  // Random price between 10 and 1000
+            'price' => fake()->numberBetween(2, 10000, 100000),  // Random price between 10 and 1000
             'quantity' => $isQuantity ? fake()->numberBetween(0, 500) : 0,  // Random quantity between 1 and 500
             'is_quantity' => $isQuantity,
             'expiration' => fake()->date(),
@@ -40,6 +40,7 @@ class ProductFactory extends Factory
             'meta_subtitle' => fake()->optional()->sentence,
             'meta_title' => fake()->optional()->sentence,
             'meta_description' => fake()->optional()->paragraph,
+            'status' => fake()->boolean,
             'brand_id' => rand(1,15),  // Assuming a relation to a Brand model
         ];
     }

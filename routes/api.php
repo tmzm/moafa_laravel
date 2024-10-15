@@ -81,10 +81,9 @@ Route::group([
 
     // Messages
     Route::post('messages/{message_id}/update',[MessageController::class,'update']);
-    Route::post('messages/create',[MessageController::class,'create']);
+    Route::post('messages/users/{user_id}/create',[MessageController::class,'create']);
     Route::delete('messages/{message_id}/delete',[MessageController::class,'destroy']);
     Route::post('messages/users/{user_id}',[MessageController::class,'index_by_user']);
-    Route::get('messages/users',[MessageController::class,'index_users']);
 
     // Phone unique
     Route::get('users/{phone_number}/unique',[UserController::class,'unique']);

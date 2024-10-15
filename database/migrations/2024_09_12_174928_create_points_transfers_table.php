@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('reason');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->double('amount');
-            $table->enum('type',['deposit','withdrawal'])->default('deposit');
+            $table->enum('type',['DEPOSIT','WITHDRAWAL'])->default('deposit');
             $table->timestamps();
         });
     }

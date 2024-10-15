@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
-    public function create(Request $request)
+    public function create(Request $request, $user_id)
     {
         $message = Message::create([
-            'sender_id' => $request->user()->id,
-            'receiver_id' => $request->receiver_id,
+            'user_id' => $user_id,
+            'type' => $request->type,
             'content' => $request->content
         ]);
 
@@ -52,7 +52,7 @@ class MessageController extends Controller
 
     public function index_by_user(Request $request, $user_id)
     {
-        $messages = Message::latest()->where('receiver_id', $user_id)->orWhere('sender_id', $user_id);
+        $messages = Message::latest()->where('user_id', $user_id);
         $count = $messages->count();
 
         if($request->take){
@@ -64,37 +64,5 @@ class MessageController extends Controller
         }
 
         self::ok(['messages' => $messages->get(), 'count' => $count]);
-    }
-
-    public function index_users()
-    {
-        $sentUsers = User::where('role','!=','admin')
-            ?->whereHas('sended_messages')
-            ?->with(['sended_messages' => fn($query) =>
-                $query->latest()->first()
-            ])->get();
-
-        $receivedUsers = User::where('role','!=','admin')
-            ?->whereHas('received_messages')
-            ?->with(['received_messages' => fn($query) =>
-                $query->latest()->first()
-            ])->get();
-
-        $users = $sentUsers->merge($receivedUsers);
-
-        $users = $users->map(function($user) {
-            $lastSent = $user->sended_messages()->latest()->first();
-            $lastReceived = $user->received_messages()->latest()->first();
-    
-            $lastMessage = $lastSent && $lastReceived 
-                ? ($lastSent->created_at > $lastReceived->created_at ? $lastSent : $lastReceived)
-                : ($lastSent ?? $lastReceived);
-    
-            $user->last_message_date = $lastMessage ? $lastMessage->created_at : null;
-    
-            return $user;
-        });
-
-        self::ok($users);
     }
 }

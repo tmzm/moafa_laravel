@@ -27,7 +27,8 @@ class CouponFactory extends Factory
             'user_id' =>fake()->boolean ? fake()->numberBetween(1,30) : null,  // Assuming a relation to a User model
             'code' => strtoupper(fake()->bothify('???-####')),  // Example code format
             'discount' => fake()->numberBetween(1, 50),  // Random discount between 1 and 50
-            'discount_type' => fake()->randomElement(['percentage', 'fixed']),
+            'status' => fake()->boolean,
+            'discount_type' => fake()->randomElement(['PERCENTAGE', 'FIXED']),
         ];
     }
 

@@ -28,6 +28,9 @@ class BrandController extends Controller
         $image = self::save_image_to_public_directory($request);
         $brand = Brand::create([
             'name' => $request->name,
+            'meta_title' => $request->meta_title,
+            'meta_subtitle' => $request->meta_subtitle,
+            'meta_description' => $request->meta_description,
             'image' => $image,
             ]);
 
@@ -51,8 +54,16 @@ class BrandController extends Controller
             if($image)
                 $brand->image = $image;
 
-            if($image || $request->name)
-                $brand->save();
+            if($request->meta_title)
+                $brand->meta_title = $request->meta_title;
+            
+            if($request->meta_subtitle)
+                $brand->meta_subtitle = $request->meta_subtitle;
+            
+            if($request->meta_description)
+                $brand->meta_description = $request->meta_description;
+
+            $brand->save();
         }
 
         self::ok($brand);

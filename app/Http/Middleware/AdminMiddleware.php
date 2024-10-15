@@ -17,7 +17,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->user()->role != 'admin') return $this->unAuth();
+        if($request->user()->role != 'ADMIN') return $this->unAuth();
 
         return $next($request);
     }

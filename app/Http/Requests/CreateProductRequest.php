@@ -41,6 +41,7 @@ class CreateProductRequest extends FormRequest
             'price' => 'required',
             'expiration' => 'required|date',
             'image' => ['image','mimes:jpg,jpeg,png,svg,webp'],
+            'status' => 'required|boolean',
             'categories' => ['array','required']
         ];
     }

@@ -30,10 +30,11 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min:3|max:50',
+            'last_name' => 'required|min:3|max:50',
+            'first_name' => 'required|min:3|max:50',
             'phone_number' => 'required|unique:users,phone_number',
             'password' => 'required|min:5|max:30',
-            'role' => 'required',
+            'role' => '',
             // 'image' => ['image','mimes:jpg,jpeg,png,svg'],
             'avatar' => ''
         ];

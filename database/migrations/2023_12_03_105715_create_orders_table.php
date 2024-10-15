@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('coupon_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->enum('status',['preparing','shipping','delivered'])->default('preparing');
+            $table->enum('status',['PREPARING','SHIPPING','DELIVERED'])->default('PREPARING');
             $table->boolean('payment_status')->default(false);
             $table->timestamp('time')->nullable();
             $table->boolean('is_time')->default(false);

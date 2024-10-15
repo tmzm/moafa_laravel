@@ -28,7 +28,9 @@ class User extends Authenticatable
 
         if($filters['search'] ?? false){
 
-            $query->where('name','like', '%'. $filters['search'] .'%');
+            $query->where('first_name','like' , '%' . $filters['search'] . '%')
+
+            ->orWhere('last_name','like' , '%' . $filters['search'] . '%');
 
         }
 

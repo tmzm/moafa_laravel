@@ -30,7 +30,7 @@ class CouponController extends Controller
                 'code' =>  $request->code,
                 'price' =>  $request->price,
                 'discount' => $request->discount,
-                'discount_type' => $request->discount_type ?? 'percentage'
+                'discount_type' => $request->discount_type ?? 'PERCENTAGE'
             ])
         );
     }

@@ -104,10 +104,11 @@ trait CreateUpdateHelper
     public function create_user($data)
     {
         return User::create([
-            'name' => $data['name'],
+            'last_name' => $data['last_name'],
+            'first_name' => $data['first_name'],
             'phone_number' => $data['phone_number'],
             'password' => bcrypt($data['password']),
-            'role' => $data['role'],
+            'role' => $data['role'] ?? null,
             'device_key' => $data['device_key'] ?? null,
         ]);
     }
@@ -219,6 +220,7 @@ trait CreateUpdateHelper
             'meta_title' => $data['meta_title'] ?? null,
             'price' => $data['price'],
             'expiration' => $data['expiration'],
+            'status' => $data['status'],
             'image' => $data['image'] ?? null,
         ]);
 

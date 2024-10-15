@@ -19,9 +19,11 @@ class CouponPurchase extends Model
 
             $query->whereHas('user', fn ($query)
 
-            => $query->where('name','like' , '%' . $filters['search'] . '%'))
+            => $query->where('first_name','like' , '%' . $filters['search'] . '%')
+
+            ->orWhere('last_name','like' , '%' . $filters['search'] . '%'))
             
-            ->OrWhereHas('coupon', fn ($query)
+            ->orWhereHas('coupon', fn ($query)
 
             => $query->where('code','like' , '%' . $filters['search'] . '%'));
 

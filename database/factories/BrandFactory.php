@@ -25,6 +25,7 @@ class BrandFactory extends Factory
     {
         return [
             'name' => fake()->company,
+            'status' => fake()->boolean,
             'image' => fake()->imageUrl(640, 480, 'business', true, 'brand'),
         ];
     }
