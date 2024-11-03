@@ -30,7 +30,7 @@ class ProductFactory extends Factory
             'name' => fake()->word,
             'slug' => fake()->slug,
             'is_offer' => $isOffer,
-            'offer' => $isOffer ? fake()->optional()->numberBetween(5, 99) : null,
+            'offer' => $isOffer ? fake()->numberBetween(5, 99) : null,
             'description' => fake()->paragraph,
             'price' => fake()->numberBetween(2, 10000, 100000),  // Random price between 10 and 1000
             'quantity' => $isQuantity ? fake()->numberBetween(0, 500) : 0,  // Random quantity between 1 and 500

@@ -88,32 +88,6 @@ class Order extends Model
     {
         return $this->belongsTo(Coupon::class);
     }
-    
-    public function scopeWithTotalPrice($query)
-    {
-        return $query->with(['order_items.product', 'coupon'])->get()->map(function ($order) {
-                $totalPriceBeforeCoupon = $order->order_items->sum(function ($orderItem) {
-                $product = $orderItem->product;
-                $price = $product->is_offer ? $product->price * (1 - ($product->offer / 100)) : $product->price;
-                return $orderItem->quantity * $price;
-            });
-
-            if ($order->coupon) {
-                if ($order->coupon->discount_type == 'PERCENTAGE') {
-                    $totalPrice = $totalPriceBeforeCoupon * (1 - ($order->coupon->discount / 100));
-                } elseif ($order->coupon->discount_type == 'FIXED') {
-                    $totalPrice = $totalPriceBeforeCoupon - $order->coupon->discount;
-                } else {
-                    $totalPrice = $totalPriceBeforeCoupon;
-                }
-            } else {
-                $totalPrice = $totalPriceBeforeCoupon;
-            }
-
-            $order->total_price = $totalPrice;
-            return $order;
-        });
-    }
 
     public function scopeByOrderItemId($query,$order_item_id)
     {

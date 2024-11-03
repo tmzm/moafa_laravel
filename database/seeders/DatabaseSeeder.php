@@ -15,11 +15,13 @@ use App\Models\PointsTransfer;
 use App\Models\Prescription;
 use App\Models\Product;
 use App\Models\User;
-use Database\Factories\CategoryFactory;
+use App\Http\Controllers\LogicHelper;
+use App\Http\Helpers\LogicHelper as HelpersLogicHelper;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    use HelpersLogicHelper;
     /**
      * Seed the application's database.
      */
@@ -40,6 +42,10 @@ class DatabaseSeeder extends Seeder
         Product::factory(60)->create();
 
         OrderItem::factory(120)->create();
+
+        Order::get()->map(function($order) {
+            self::save_order_total_price($order);
+        });
 
         Location::factory(20)->create();
 

@@ -32,7 +32,7 @@ class OrderController extends Controller
      */
     public function show(Request $request,$order_id): void
     {
-        $order = Order::withTotalPrice()->find($order_id);
+        $order = Order::find($order_id);
 
         if($order)
             self::ok($order);

@@ -46,57 +46,93 @@ trait CreateUpdateHelper
         }
     }
 
-    public function create_order_item_and_reduce_every_product_by_order_quantity($products,$order)
+    public function create_order_item_and_reduce_every_product_by_order_quantity($orderItems,$order)
     {
-        foreach ($products as $p) {
+        foreach ($orderItems as $orderItem) {
             OrderItem::create([
-                'product_id' => $p['id'],
+                'product_id' => $orderItem['product_id'],
                 'order_id' => $order->id,
-                'quantity' => $p['quantity']
+                'quantity' => $orderItem['quantity']
             ]);
-            $pr = Product::find($p['id']);
-            if($pr->is_quantity){
-                $pr->quantity -= $p['quantity'];
-                $pr->save();
+            $product = Product::find($orderItem['product_id']);
+            if($product->is_quantity){
+                $product->quantity -= $orderItem['quantity'];
+                $product->save();
             }
         }
     }
 
-    public function decresue_total_price_before_delete_order_item($orderItem): void
+    public function decrease_total_price_before_delete_order_item($orderItem): void
     {
         $product = $orderItem->product;
         $product->quantity += $orderItem->quantity;
         $product->save();
     }
 
-    public function update_every_order_item_quantity($request,$order): void
+    public function update_every_order_item_quantity($orderItems,$order): void
     {
         // $temp = $request;
         // check new order quantity if not biggest than product quantity
-        foreach ($request as $p){
-            $product = Product::find($p['id']);
-            $orderItem = OrderItem::firstWhere('product_id',$p['id']);
+        foreach ($orderItems as $orderItem){
+            $product = Product::find($orderItem['product_id']);
+            $orderItem = OrderItem::firstWhere('product_id',$orderItem['product_id']);
+
             if($product->is_quantity){
-                $product->quantity += $orderItem->quantity;
-                if($product->quantity < $p['quantity'])
+                if ($orderItem)
+                    $product->quantity += $orderItem['quantity'];
+                if($product->quantity < $orderItem['quantity'])
                     self::unHandledError('some of the products could not be updated');
             }
         }
-        foreach ($request as $p) {
-            $orderItem = OrderItem::firstWhere('product_id',$p['id']);
-            $product = Product::find($p['id']);
+
+        foreach($orderItems as $orderItem){
+            $isExists = 0;
+
+            foreach($orderItems as $newOrderItem){
+
+                if($newOrderItem['product_id'] == $orderItem['product_id']){
+                    $isExists++;
+                }
+                
+            }
+
+            if($isExists == 0){
+                $orderItem->delete();
+            }
+        }
+
+        foreach($orderItems as $orderItem){
+            $isExists = 0;
+
+            foreach($order->order_items as $oldOrderItem){
+                if($oldOrderItem->product_id == $orderItem['product_id']){
+                    $isExists++;
+                }
+            }
+
+            if($isExists == 0){
+                OrderItem::create([
+                    'product_id' => $orderItem['product_id'],
+                    'order_id' => $order->id,
+                    'quantity' => $orderItem['quantity']
+                ]);
+            } else {
+                $excitesOrderItem = OrderItem::firstWhere('product_id', $orderItem['product_id']);
+                $product = Product::find($orderItem['product_id']);
             
-            if($product->is_quantity)
-               $product->quantity += $orderItem->quantity;
+                if($product->is_quantity)
+                   $product->quantity += $orderItem['quantity'];
+    
+                $excitesOrderItem->update([
+                    'quantity' => $orderItem['quantity']
+                ]);
 
-            $orderItem->update([
-                'quantity' => $p['quantity']
-            ]);
-            $order->save();
-
-            if($product->is_quantity){
-                $product->quantity -= $p['quantity'];
-                $product->save();
+                $order->save();
+    
+                if($product->is_quantity){
+                    $product->quantity -= $orderItem['quantity'];
+                    $product->save();
+                }        
             }
         }
     }
@@ -116,9 +152,9 @@ trait CreateUpdateHelper
     public function create_order_by_request($request): void
     {
 
-        isset($request['products']) ? $products = $request['products'] : self::unHandledError('No Products found');
+        isset($request['order_items']) ? $order_items = $request['order_items'] : self::unHandledError('No Order items found');
 
-        self::check_products_quantity($products);
+        self::check_products_quantity($order_items);
 
         $coupon = null;
 
@@ -135,12 +171,14 @@ trait CreateUpdateHelper
             'time' => $request['time'] ?? null,
             'is_time' => $request['is_time'] ?? false,
             'user_id' => $request['user_id'] ?? $request->user()->id,
-            'location_id' => $request['location_id'],
+            'location_id' => $request['location_id']
         ]);
 
-        self::create_order_item_and_reduce_every_product_by_order_quantity($products,$order);
+        $this->create_order_item_and_reduce_every_product_by_order_quantity($order_items,$order);
 
         $order = Order::find($order->id);
+        
+        self::save_order_total_price($order);
 
         self::ok($order);
     }
@@ -153,10 +191,12 @@ trait CreateUpdateHelper
             self::notFound();
 
         if($request['status'] ?? $request['payment_status'] ?? false)
-            self::update_order_status($order,$request);
+            $this->update_order_status($order,$request);
 
         if($request['products'] ?? false)
-            self::update_every_order_item_quantity($request['products'],$order);
+            $this->update_every_order_item_quantity($request->order_items,$order);
+
+        self::save_order_total_price($order);
 
         self::ok($order);
     }
@@ -166,7 +206,7 @@ trait CreateUpdateHelper
         $order = Order::find($order_id);
 
         if($order) {
-            self::increase_every_product_by_quantity($order);
+            $this->increase_every_product_by_quantity($order);
             $order->delete();
             self::ok();
         }
@@ -178,7 +218,7 @@ trait CreateUpdateHelper
         $orderItem = OrderItem::find($order_item_id);
 
         if($orderItem){
-            self::decresue_total_price_before_delete_order_item($orderItem);
+            $this->decrease_total_price_before_delete_order_item($orderItem);
             $orderItem->delete();
             self::ok();
         }
