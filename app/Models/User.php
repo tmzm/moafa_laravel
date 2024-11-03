@@ -49,17 +49,7 @@ class User extends Authenticatable
         $query->latest();
     }
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'phone_number',
-        'password',
-        'role'
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
